@@ -45,25 +45,28 @@ gcloud iam service-accounts create github-deployer --project=$PROJECT_ID --displ
 This SA is what the workflow effectively "becomes" — least-privilege identity, not your personal account.
 
 ### 6. Grant GKE Admin role to the service account
-```powershell
-gcloud projects add-iam-policy-binding $PROJECT_ID `
-  --member="serviceAccount:github-deployer@$PROJECT_ID.iam.gserviceaccount.com" `
+```bash
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:github-deployer@$PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/container.admin"
 ```
 Permission to create/manage GKE clusters.
 
 ### 7. Allow the WIF pool to impersonate that service account
-```powershell
-gcloud iam service-accounts add-iam-policy-binding "github-deployer@$PROJECT_ID.iam.gserviceaccount.com" `
-  --project=$PROJECT_ID --role="roles/iam.workloadIdentityUser" `
+```bash
+gcloud iam service-accounts add-iam-policy-binding "github-deployer@$PROJECT_ID.iam.gserviceaccount.com" \
+  --project="$PROJECT_ID" \
+  --role="roles/iam.workloadIdentityUser" \
   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUM/locations/global/workloadIdentityPools/github-pool/attribute.repository/$REPO"
 ```
 Links GitHub's identity (from step 4) to the service account (from step 5) — this is the actual trust bridge.
 
 ### 8. Get the WIF_PROVIDER value
-```powershell
-gcloud iam workload-identity-pools providers describe "github-provider" `
-  --project=$PROJECT_ID --location="global" --workload-identity-pool="github-pool" `
+```bash
+gcloud iam workload-identity-pools providers describe "github-provider" \
+  --project="$PROJECT_ID" \
+  --location="global" \
+  --workload-identity-pool="github-pool" \
   --format="value(name)"
 ```
 Copy the full output string — this is your `WIF_PROVIDER` secret value.
