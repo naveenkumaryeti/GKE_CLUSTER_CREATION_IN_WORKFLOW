@@ -85,6 +85,8 @@ jobs:
             --zone $env:ZONE
 
           Write-Host "`n===== CREDENTIALS FETCH (kubectl context) ====="
+          gcloud components install gke-gcloud-auth-plugin --quiet
+          $env:USE_GKE_GCLOUD_AUTH_PLUGIN = "True"
           gcloud container clusters get-credentials $env:CLUSTER_NAME --zone $env:ZONE
           kubectl cluster-info
           kubectl get nodes -o wide
