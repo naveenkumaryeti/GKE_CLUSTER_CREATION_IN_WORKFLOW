@@ -43,19 +43,24 @@ jobs:
           gcloud config set project $env:PROJECT_ID
           Write-Host "Project set to $env:PROJECT_ID"
 
-      - name: Create GKE cluster
+      - name: Create GKE cluster (skip if exists)
         shell: pwsh
         run: |
-          Write-Host "Creating cluster '$env:CLUSTER_NAME' in zone '$env:ZONE'..."
-          gcloud container clusters create $env:CLUSTER_NAME `
-            --zone $env:ZONE `
-            --num-nodes 2 `
-            --machine-type e2-medium `
-            --release-channel regular `
-            --quiet
-          if ($LASTEXITCODE -ne 0) {
-            Write-Error "Cluster creation failed."
-            exit 1
+          gcloud container clusters describe $env:CLUSTER_NAME --zone $env:ZONE 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Cluster '$env:CLUSTER_NAME' already exists. Skipping creation."
+          } else {
+            Write-Host "Creating cluster '$env:CLUSTER_NAME' in zone '$env:ZONE'..."
+            gcloud container clusters create $env:CLUSTER_NAME `
+              --zone $env:ZONE `
+              --num-nodes 2 `
+              --machine-type e2-medium `
+              --release-channel regular `
+              --quiet
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Cluster creation failed."
+              exit 1
+            }
           }
 
       - name: Verify cluster was created
