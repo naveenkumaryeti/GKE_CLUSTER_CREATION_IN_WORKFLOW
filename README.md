@@ -9,7 +9,7 @@ One-time IAM setup so GitHub Actions can authenticate to GCP **without a stored 
 ```powershell
 $PROJECT_ID="gke-cluster-creation-workflow"
 $PROJECT_NUM=(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
-$REPO="naveenkumaryeti/YOUR_REPO_NAME"
+$REPO="naveenkumaryeti/GKE_CLUSTER_CREATION_IN_WORKFLOW"
 ```
 Reused by every command below. `$PROJECT_NUM` is needed for the trust binding in step 7.
 
