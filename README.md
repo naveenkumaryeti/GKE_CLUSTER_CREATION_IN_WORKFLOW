@@ -76,7 +76,7 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 | Secret | Value |
 |---|---|
 | `WIF_PROVIDER` | output from step 8 |
-| `WIF_SERVICE_ACCOUNT` | `github-deployer@naveen-devops-cicd.iam.gserviceaccount.com` |
+| `WIF_SERVICE_ACCOUNT` | `github-deployer@gke-cluster-creation-workflow.iam.gserviceaccount.com` |
 
 ---
 
